@@ -39,9 +39,18 @@ const isAllowedDevOrigin = (origin) => {
   }
 };
 
+const isAllowedVercelOrigin = (origin) => {
+  if (!origin || !process.env.VERCEL) return false;
+  try {
+    return new URL(origin).hostname.endsWith(".vercel.app");
+  } catch {
+    return false;
+  }
+};
+
 const corsOptions = {
   origin(origin, callback) {
-    if (configuredClientUrls.includes(origin) || isAllowedDevOrigin(origin)) {
+    if (configuredClientUrls.includes(origin) || isAllowedDevOrigin(origin) || isAllowedVercelOrigin(origin)) {
       callback(null, true);
       return;
     }

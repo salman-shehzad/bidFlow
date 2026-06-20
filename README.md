@@ -69,8 +69,32 @@ npm run start
 
 ## Deployment Notes
 
-Deploy the backend to Render, Railway, Fly.io, or a Node-capable VPS. Set `PORT`, `MONGO_URI`, `JWT_SECRET`, and `CLIENT_URL` in the host environment.
+### Vercel
 
-Deploy the frontend to Vercel, Netlify, or static hosting. Set `VITE_API_URL` and `VITE_SOCKET_URL` to the deployed backend URL.
+This repo includes `vercel.json` and `api/[...path].mjs`, so Vercel can build the Vite frontend and serve the Express API as serverless functions from the same project.
+
+In Vercel, import the GitHub repo with the project root set to the repository root. Use these settings:
+
+```text
+Framework Preset: Other
+Build Command: npm run build --workspace frontend
+Output Directory: frontend/dist
+Install Command: npm install
+```
+
+Set these Vercel environment variables:
+
+```env
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster-url>/bidflow?retryWrites=true&w=majority&appName=<app-name>
+MONGO_DB_NAME=bidflow
+JWT_SECRET=your_secret_key
+CLIENT_URL=https://your-vercel-project.vercel.app
+```
+
+`VITE_API_URL` is optional on Vercel because the frontend defaults to `/api` in production. Set it only if the API is hosted somewhere else.
+
+### Realtime And Uploads
+
+Vercel serverless functions do not provide a long-running Socket.IO server. The REST API, auth, dashboards, listings, bidding requests, and admin routes can run on Vercel, but realtime bid broadcasts need the backend hosted on Render, Railway, Fly.io, or another always-on Node host. If you use a separate backend host for realtime, set `VITE_API_URL`, `VITE_SOCKET_URL`, and `CLIENT_URL` to the deployed URLs.
 
 For production image storage, replace local `uploads/` with S3, Cloudinary, or another managed object store.

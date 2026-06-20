@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
+
   const uri = process.env.MONGO_URI?.trim();
   if (!uri) {
     throw new Error("MONGO_URI is required. Add it to backend/.env.");
