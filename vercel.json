@@ -9,12 +9,13 @@
   },
   "rewrites": [
     {
-      "source": "/uploads/(.*)",
-      "destination": "/api/uploads/$1"
+      "source": "/api/(.*)",
+      "destination": "/api/[...path]"
     },
     {
-      "source": "/((?!api/.*).*)",
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ]
 }
+

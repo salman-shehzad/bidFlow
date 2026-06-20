@@ -7,21 +7,21 @@ import mongoSanitize from "express-mongo-sanitize";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
-import authRoutes from "./routes/auth.routes.js";
-import auctionRoutes from "./routes/auction.routes.js";
-import productRoutes from "./routes/product.routes.js";
-import userRoutes from "./routes/user.routes.js";
-import notificationRoutes from "./routes/notification.routes.js";
-import transactionRoutes from "./routes/transaction.routes.js";
-import adminRoutes from "./routes/admin.routes.js";
-import { notFound, errorHandler } from "./middleware/error.middleware.js";
+import authRoutes from "./src/routes/auth.routes.js";
+import auctionRoutes from "./src/routes/auction.routes.js";
+import productRoutes from "./src/routes/product.routes.js";
+import userRoutes from "./src/routes/user.routes.js";
+import notificationRoutes from "./src/routes/notification.routes.js";
+import transactionRoutes from "./src/routes/transaction.routes.js";
+import adminRoutes from "./src/routes/admin.routes.js";
+import { notFound, errorHandler } from "./src/middleware/error.middleware.js";
 import mongoose from "mongoose";
-import connectDB from "./config/db.js";
+import connectDB from "./src/config/db.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config({ path: path.resolve(__dirname, "./.env") });
 
 const configuredClientUrls = (process.env.CLIENT_URL || "http://localhost:3000")
   .split(",")
@@ -94,9 +94,10 @@ app.get("/api/db-test", async (_req, res) => {
     });
   }
 });
+
 const uploadDir = process.env.VERCEL
   ? "/tmp/uploads"
-  : path.join(__dirname, "../uploads");
+  : path.join(__dirname, "./uploads");
 app.use("/uploads", express.static(uploadDir));
 
 app.use("/api/auth", authRoutes);
