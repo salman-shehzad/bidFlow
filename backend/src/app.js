@@ -40,9 +40,12 @@ const isAllowedDevOrigin = (origin) => {
 };
 
 const isAllowedVercelOrigin = (origin) => {
-  if (!origin || !process.env.VERCEL) return false;
+  if (!origin) return false;
   try {
-    return new URL(origin).hostname.endsWith(".vercel.app");
+    const originHostname = new URL(origin).hostname;
+    if (originHostname.endsWith(".vercel.app")) return true;
+    if (process.env.VERCEL) return true;
+    return false;
   } catch {
     return false;
   }
@@ -69,7 +72,10 @@ app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: true, legacyHeaders: false }));
 
 app.get("/api/health", (_req, res) => res.json({ status: "ok", service: "BidFlow API" }));
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+const uploadDir = process.env.VERCEL
+  ? "/tmp/uploads"
+  : path.join(__dirname, "../uploads");
+app.use("/uploads", express.static(uploadDir));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
