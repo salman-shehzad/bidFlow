@@ -15,6 +15,8 @@ import notificationRoutes from "./routes/notification.routes.js";
 import transactionRoutes from "./routes/transaction.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
+import mongoose from "mongoose";
+import connectDB from "./config/db.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -72,6 +74,26 @@ app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: true, legacyHeaders: false }));
 
 app.get("/api/health", (_req, res) => res.json({ status: "ok", service: "BidFlow API" }));
+app.get("/api/db-test", async (_req, res) => {
+  try {
+    await connectDB();
+    const state = mongoose.connection.readyState;
+    const states = ["disconnected", "connected", "connecting", "disconnecting"];
+    res.json({
+      status: "success",
+      readyState: state,
+      stateName: states[state],
+      dbName: mongoose.connection.name,
+      host: mongoose.connection.host
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+      stack: error.stack
+    });
+  }
+});
 const uploadDir = process.env.VERCEL
   ? "/tmp/uploads"
   : path.join(__dirname, "../uploads");
