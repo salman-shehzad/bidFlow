@@ -1,6 +1,6 @@
 {
   "installCommand": "npm install",
-  "buildCommand": "npm run build --workspace frontend",
+  "buildCommand": "npm run build -w bidflow-frontend",
   "outputDirectory": "frontend/dist",
   "functions": {
     "api/[...path].mjs": {
