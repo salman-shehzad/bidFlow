@@ -1,5 +1,7 @@
 # BidFlow
 
+https://bid--flow.vercel.app/
+
 BidFlow is a MERN auction platform with JWT authentication, role-based Buyer/Seller/Admin flows, realtime bidding through Socket.IO, product image uploads, admin analytics, notifications, and a mock winner payment flow.
 
 ## Folder Structure
